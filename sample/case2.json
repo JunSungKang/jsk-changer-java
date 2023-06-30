@@ -1,0 +1,18 @@
+{
+    "students": {
+        "student": [
+            {
+                "name": "jskang",
+                "job": "developer",
+                "company": "wisenut",
+                "nation": "republic of korea"
+            },
+            {
+                "name": "jhkim",
+                "job": "employee",
+                "company": "themotion-academy",
+                "nation": "republic of korea"
+            }
+        ]
+    }
+}

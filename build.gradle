@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+group 'jskang.jsk-changer-java'
+version '0.1'
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
+}

@@ -1,21 +1,21 @@
+package xml;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
-public class XMLChanger {
-
-    public XMLChanger() {
+public class ToJson {
+    protected ToJson() {
 
     }
 
-    public String toJson(Path xml) throws IOException {
-        return this.toJson(xml.toFile());
+    protected String convert(Path xml) throws IOException {
+        return this.convert(xml.toFile());
     }
-    
-    public String toJson(File xml) throws IOException {
+
+    protected String convert(File xml) throws IOException {
         if (!xml.isFile()) {
             throw new FileNotFoundException(xml.getAbsolutePath());
         }
@@ -23,10 +23,10 @@ public class XMLChanger {
         FileInputStream in = new FileInputStream(xml);
         byte[] xmlByte = in.readAllBytes();
 
-        return this.toJson(new String(xmlByte));
+        return this.convert(new String(xmlByte));
     }
 
-    public String toJson(String xml) {
+    protected String convert(String xml) {
         return "";
     }
 }

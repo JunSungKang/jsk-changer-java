@@ -6,11 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
-import xml.JskXmlChanger;
+import xml.XmlChanger;
 
 class JskXmlChangerTest {
-
-    final JskXmlChanger jskXmlChanger = new JskXmlChanger();
 
     @Test
     void testCase1() throws IOException {
@@ -30,7 +28,7 @@ class JskXmlChangerTest {
         byte[] jsonByte = expectedIn.readAllBytes();
         String json = new String(jsonByte);
 
-        String convertJsonValue = new JskXmlChanger.builder(xmlFile).build();
+        String convertJsonValue = XmlChanger.fromXml(xmlFile).toJson();
         assertThat(convertJsonValue).isEqualTo(json);
     }
 
@@ -52,7 +50,7 @@ class JskXmlChangerTest {
         byte[] jsonByte = expectedIn.readAllBytes();
         String json = new String(jsonByte);
 
-        String convertJsonValue = new JskXmlChanger.builder(xmlFile).build();
+        String convertJsonValue = XmlChanger.fromXml(xmlFile).toJson();
         assertThat(convertJsonValue).isEqualTo(json);
     }
 }

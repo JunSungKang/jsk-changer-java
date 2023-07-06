@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
-import xml.XmlChanger;
+import jsk.changer.xml.XmlChanger;
 
 class JskXmlChangerTest {
 

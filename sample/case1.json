@@ -1,8 +1,1 @@
-{
-    "student": {
-        "name": "jskang",
-        "job": "developer",
-        "company": "wisenut",
-        "nation": "republic of korea"
-    }
-}
+{"student":{"name":"jskang","job":"developer","company":"wisenut","nation":"republic of korea"}}

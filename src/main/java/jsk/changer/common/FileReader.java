@@ -1,4 +1,4 @@
-package common;
+package jsk.changer.common;
 
 import java.io.File;
 import java.io.FileInputStream;

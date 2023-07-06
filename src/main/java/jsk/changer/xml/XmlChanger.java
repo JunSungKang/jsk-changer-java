@@ -1,8 +1,8 @@
-package xml;
+package jsk.changer.xml;
 
-import common.Changer;
-import common.FileReader;
-import common.ReaderType;
+import jsk.changer.common.Changer;
+import jsk.changer.common.FileReader;
+import jsk.changer.common.ReaderType;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;

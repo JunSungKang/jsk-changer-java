@@ -1,4 +1,4 @@
-package common;
+package jsk.changer.common;
 
 public enum ReaderType {
     PATH("path", 0),

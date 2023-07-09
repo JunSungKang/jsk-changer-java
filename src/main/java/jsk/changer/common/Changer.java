@@ -1,8 +1,11 @@
 package jsk.changer.common;
 
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 
 public interface Changer {
 
-    public String toJson() throws IOException;
+    String toJson() throws IOException, ParserConfigurationException, SAXException;
 }

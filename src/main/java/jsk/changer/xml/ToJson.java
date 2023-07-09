@@ -1,8 +1,16 @@
 package jsk.changer.xml;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsk.changer.exception.XmlParserException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,32 +19,23 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 class ToJson {
+    private final DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
+    private final DocumentBuilder builder = factory.newDocumentBuilder();
+    private final InputStream inputStream;
+
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private String xml = "";
     private final List<String> SKIP_WORD = Arrays.asList("#text");
     private final Map<String, Object> result = new LinkedHashMap<>();
 
-    public ToJson(String xml) {
-        this.xml = xml;
+    public ToJson(String xml) throws ParserConfigurationException {
+        this.inputStream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
     }
 
-    private void parser() throws ParserConfigurationException, IOException, SAXException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-
-        InputStream in = new ByteArrayInputStream(this.xml.getBytes(StandardCharsets.UTF_8));
-        Document document = builder.parse(in);
+    protected String convert(boolean beautify) throws IOException, SAXException {
+        Document document = builder.parse(this.inputStream);
 
         Element root = document.getDocumentElement();
         String rootName = root.getNodeName();
@@ -60,18 +59,6 @@ class ToJson {
                 throw new XmlParserException("Parsing failed with invalid data. Error node : " +rootName);
             }
         }
-    }
-
-    protected String convert(boolean beautify) throws JsonProcessingException {
-        try {
-            parser();
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        }
 
         if (beautify) {
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this.result);
@@ -84,11 +71,9 @@ class ToJson {
      * XML 의 기본 노드를 JSON 의 Key-Value 형태로 변환
      * @param key XML의 태그명
      * @param value 태그에 해당하는 값
-     * @return 변환된 Key-Value 형태의 Map
      */
-    private Map<String, Object> setNode(Map<String, Object> map, String key, Object value) {
+    private void setNode(Map<String, Object> map, String key, Object value) {
         map.put(key, value);
-        return map;
     }
 
     /**

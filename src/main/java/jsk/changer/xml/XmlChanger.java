@@ -48,13 +48,17 @@ public class XmlChanger {
         }
 
         public String toJson() throws IOException {
+            return this.toJson(false);
+        }
+
+        public String toJson(boolean beautify) throws IOException {
             switch (readerType.getSignal()) {
                 case 0:
-                    return new ToJson(fileReader.read(this.path)).convert();
+                    return new ToJson(fileReader.read(this.path)).convert(beautify);
                 case 1:
-                    return new ToJson(fileReader.read(this.file)).convert();
+                    return new ToJson(fileReader.read(this.file)).convert(beautify);
                 case 2:
-                    return new ToJson(this.str).convert();
+                    return new ToJson(this.str).convert(beautify);
                 default:
                     throw new UnsupportedOperationException();
             }

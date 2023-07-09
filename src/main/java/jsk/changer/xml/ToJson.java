@@ -1,5 +1,7 @@
 package jsk.changer.xml;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jsk.changer.exception.XmlParserException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,6 +21,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 class ToJson {
+    private final ObjectMapper mapper = new ObjectMapper();
+
     private String xml = "";
     private final List<String> SKIP_WORD = Arrays.asList("#text");
     private final Map<String, Object> result = new LinkedHashMap<>();
@@ -58,7 +62,7 @@ class ToJson {
         }
     }
 
-    protected String convert() {
+    protected String convert(boolean beautify) throws JsonProcessingException {
         try {
             parser();
         } catch (ParserConfigurationException e) {
@@ -68,7 +72,12 @@ class ToJson {
         } catch (SAXException e) {
             throw new RuntimeException(e);
         }
-        return this.result.toString();
+
+        if (beautify) {
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this.result);
+        } else {
+            return mapper.writeValueAsString(this.result);
+        }
     }
 
     /**

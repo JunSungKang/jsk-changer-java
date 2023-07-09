@@ -68,18 +68,18 @@ class ToJson {
     }
 
     /**
-     * XML 의 기본 노드를 JSON 의 Key-Value 형태로 변환
-     * @param key XML의 태그명
-     * @param value 태그에 해당하는 값
+     * Convert the basic node of XML to Key-Value format of JSON
+     * @param key XML tag name
+     * @param value The value corresponding to the tag
      */
     private void setNode(Map<String, Object> map, String key, Object value) {
         map.put(key, value);
     }
 
     /**
-     * 변수가 Map 인지 확인
-     * @param obj 확인할 변수
-     * @return Map인 경우 true, 아닌 경우 false;
+     * Check if the variable is a Map
+     * @param obj variable to check
+     * @return true if Map, otherwise false;
      */
     private boolean isMap(Object obj) {
         return obj instanceof Map;

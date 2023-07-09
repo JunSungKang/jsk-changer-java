@@ -9,11 +9,14 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
 import jsk.changer.xml.XmlChanger;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 class JskXmlChangerTest {
 
     @Test
-    void testCase1() throws IOException {
+    void testCase1() throws IOException, ParserConfigurationException, SAXException {
         // Origin xml value
         File xmlFile = Paths.get("sample", "case1.xml").toFile();
         if (!xmlFile.isFile()) {
@@ -35,7 +38,7 @@ class JskXmlChangerTest {
     }
 
     @Test
-    void testCase2() throws IOException {
+    void testCase2() throws IOException, ParserConfigurationException, SAXException {
         // Origin xml value
         File xmlFile = Paths.get("sample", "case2.xml").toFile();
         if (!xmlFile.isFile()) {

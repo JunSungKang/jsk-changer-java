@@ -7,11 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
-import org.junit.jupiter.api.Test;
-import jsk.changer.xml.XmlChanger;
-import org.xml.sax.SAXException;
-
 import javax.xml.parsers.ParserConfigurationException;
+import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 class JskXmlChangerTest {
 

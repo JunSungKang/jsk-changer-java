@@ -38,8 +38,8 @@ class ToJson {
         Document document = builder.parse(this.inputStream);
 
         Element root = document.getDocumentElement();
-        String rootName = root.getNodeName();
-        setNode(result, rootName, new LinkedHashMap<>());
+        String rootTag = root.getNodeName();
+        result.put(rootTag, new LinkedHashMap<>());
 
         NodeList list = root.getChildNodes();
 
@@ -50,13 +50,10 @@ class ToJson {
                 continue;
             }
 
-            String tag = node.getNodeName();
-            String value = node.getTextContent();
-
-            if (isMap(result.get(rootName))) {
-                setNode((Map<String, Object>) result.get(rootName), tag, value);
+            if (hasChildNodes(node)) {
+                nextChildNode(this.result, node, rootTag);
             } else {
-                throw new XmlParserException("Parsing failed with invalid data. Error node : " +rootName);
+                setNode(this.result, node, rootTag);
             }
         }
 
@@ -69,11 +66,54 @@ class ToJson {
 
     /**
      * Convert the basic node of XML to Key-Value format of JSON
-     * @param key XML tag name
-     * @param value The value corresponding to the tag
+     * @param tResult Map converted to JSON
+     * @param node Special node
+     * @param parentNodeName Parent node name
      */
-    private void setNode(Map<String, Object> map, String key, Object value) {
-        map.put(key, value);
+    private void setNode(Map<String, Object> tResult, Node node, String parentNodeName) throws XmlParserException {
+        String tag = node.getNodeName();
+        String value = node.getTextContent();
+
+        if (isMap(tResult.get(parentNodeName))) {
+            ((Map<String, Object>) tResult.get(parentNodeName)).put(tag, value);
+        } else {
+            throw new XmlParserException("Parsing failed with invalid data. Error node : " + parentNodeName);
+        }
+    }
+
+    /**
+     * A method that is executed when there is a child node and extracts the child node
+     * @param tResult Map converted to JSON
+     * @param nodes Special nodes
+     * @param parentNodeName The name of the parent node of the current node
+     */
+    private void nextChildNode(Map<String, Object> tResult, Node nodes, String parentNodeName) throws XmlParserException {
+        NodeList list = nodes.getChildNodes();
+
+        for (int i=0; i<list.getLength(); i++) {
+            Node node = list.item(i);
+
+            if (SKIP_WORD.contains(node.getNodeName())) {
+                continue;
+            }
+
+            String nodeName = node.getNodeName();
+            if (hasChildNodes(node)) {
+                tResult.put(parentNodeName, new LinkedHashMap<>());
+                nextChildNode(tResult, nodes, nodeName);
+            } else {
+                setNode(tResult, node, parentNodeName);
+            }
+        }
+    }
+
+    /**
+     * Check if the variable is a Map
+     * @param node variable to check
+     * @return true if next node, otherwise false;
+     */
+    private boolean hasChildNodes(Node node) {
+        return node.getChildNodes().getLength() > 1;
     }
 
     /**

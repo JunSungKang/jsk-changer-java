@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +41,7 @@ class ToJson {
 
         Element root = document.getDocumentElement();
         String rootTag = root.getNodeName();
-        result.put(rootTag, new LinkedHashMap<>());
+        this.result.put(rootTag, new LinkedHashMap<>());
 
         NodeList list = root.getChildNodes();
 
@@ -51,9 +53,15 @@ class ToJson {
             }
 
             if (hasChildNodes(node)) {
+                String newParentNodeName = node.getParentNode().getNodeName();
+                if (this.result.get(newParentNodeName) == null) {
+                    this.result.put(newParentNodeName, new LinkedHashMap<>());
+                }
+
                 nextChildNode(this.result, node, rootTag);
             } else {
-                setNode(this.result, node, rootTag);
+                this.result.put(rootTag, new LinkedList<>());
+                addNode((List<Map<String, Object>>) this.result.get(rootTag), node, rootTag);
             }
         }
 
@@ -70,12 +78,33 @@ class ToJson {
      * @param node Special node
      * @param parentNodeName Parent node name
      */
-    private void setNode(Map<String, Object> tResult, Node node, String parentNodeName) throws XmlParserException {
+    private void addNode(List<Map<String, Object>> tResult, Node node, String parentNodeName) throws XmlParserException {
         String tag = node.getNodeName();
         String value = node.getTextContent();
 
-        if (isMap(tResult.get(parentNodeName))) {
-            ((Map<String, Object>) tResult.get(parentNodeName)).put(tag, value);
+        if ( tResult.size() == 0 ) {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put(tag, value);
+            tResult.add(map);
+        } else if (tResult.size() > 0) {
+
+            int idx = -1;
+            for (int i=0; i<tResult.size(); i++) {
+                Map<String, Object> map = tResult.get(i);
+                if (map.get(tag) == null) {
+                    idx = i;
+                    break;
+                }
+            }
+            
+            if (idx == -1) {
+                Map<String, Object> map = new LinkedHashMap<>();
+                map.put(tag, value);
+                tResult.add(map);
+            } else {
+                Map<String, Object> map = tResult.get(idx);
+                map.put(tag, value);
+            }
         } else {
             throw new XmlParserException("Parsing failed with invalid data. Error node : " + parentNodeName);
         }
@@ -99,10 +128,19 @@ class ToJson {
 
             String nodeName = node.getNodeName();
             if (hasChildNodes(node)) {
-                tResult.put(parentNodeName, new LinkedHashMap<>());
+                String newParentNodeName = node.getParentNode().getNodeName();
+                Map<String, Object> map = ((Map<String, Object>) tResult.get(parentNodeName));
+                if (map.get(newParentNodeName) == null) {
+                    map.put(newParentNodeName, new LinkedHashMap<>());
+                }
                 nextChildNode(tResult, nodes, nodeName);
             } else {
-                setNode(tResult, node, parentNodeName);
+                String newParentNodeName = node.getParentNode().getNodeName();
+                Map<String, Object> map = ((Map<String, Object>) tResult.get(parentNodeName));
+                if (map.get(newParentNodeName) == null) {
+                    map.put(newParentNodeName, new LinkedList<>());
+                }
+                addNode((List<Map<String, Object>>) map.get(newParentNodeName), node, parentNodeName);
             }
         }
     }
